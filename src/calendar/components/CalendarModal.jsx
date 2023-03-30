@@ -19,7 +19,7 @@ import { useCalendarStore, useUIStore } from "../../hooks";
 export const CalendarModal = () => {
 
     const [formSubmitted, setFormSubmitted] = useState(false);
-    const { activeEvent } = useCalendarStore();
+    const { activeEvent, startSavingEvent } = useCalendarStore();
     const { isDateModalOpen, closeDateModal } = useUIStore();
 
     const [formValues, setFormValues] = useState({
@@ -82,7 +82,7 @@ export const CalendarModal = () => {
 
     ReactModal.setAppElement('#root');
 
-    const handleSubmit = ( event ) => {
+    const handleSubmit = async( event ) => {
         event.preventDefault();
         setFormSubmitted(true);
 
@@ -90,6 +90,10 @@ export const CalendarModal = () => {
 
         if ( difference <= 0 || isNaN(difference)) Swal.fire('Fechas no válidas', 'Revisar las fechas informadas', 'error');
         if ( formValues.title === '' ) return;
+
+        await startSavingEvent( formValues );
+        closeDateModal();
+        setFormSubmitted(false);
                 
     }
 
